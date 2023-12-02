@@ -2,7 +2,7 @@ import * as fs from "fs";
 
 const solutionId = "02";
 
-const loadInput = (realInput: boolean) => {
+const loadInput = (solutionId: string, realInput: boolean) => {
     return fs.readFileSync(realInput ? `${solutionId}-input-real.txt` : `${solutionId}-input.txt`, 'utf8').toString().split("\n");
 };
 
@@ -25,7 +25,7 @@ const compareTestFiles = () => {
 const solve = () => {
     const realInput = true;
 
-    let input: string[] = loadInput(realInput);
+    let input: string[] = loadInput(solutionId, realInput);
 
     let total = 0;
 
