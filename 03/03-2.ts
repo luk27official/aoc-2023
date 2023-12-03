@@ -39,7 +39,6 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
         }
     }
 
-
     for (let i = 0; i < input.length; i++) {
         const line = input[i];
         for (let y = 0; y < line.length; y++) {
@@ -48,20 +47,9 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
             if (symbol === "*") {
                 // check neighboring cells - top
                 const num = numbers.filter((e: Num) => e.row === i - 1 && (e.col <= y + 1) && (e.colLast >= y - 1));
-
                 const numLeft = numbers.filter((e: Num) => e.row === i && e.colLast === y - 1);
-
                 const numRight = numbers.filter((e: Num) => e.row === i && e.col === y + 1);
-
                 const numBot = numbers.filter((e: Num) => e.row === i + 1 && e.col <= y + 1 && e.colLast >= y - 1);
-
-                console.log(num);
-                console.log(numLeft);
-                console.log(numRight);
-                console.log(numBot);
-
-                console.log("");
-
 
                 if (num.length + numLeft.length + numRight.length + numBot.length >= 2) {
                     let t = 1;
@@ -80,9 +68,6 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
         (accumulator, num) => accumulator + num,
         0,
     );
-
-    console.log(okNums);
-    console.log(numbers);
 
     console.log(output);
     if (Number(output) === expected) {
