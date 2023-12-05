@@ -1,4 +1,4 @@
-import { loadInput, writeOutput, compareTestFiles } from "./utils";
+import { loadInput, writeOutput, compareTestFiles } from "../template/utils";
 
 const solve = (realInput: boolean, solutionId: string, expected: number) => {
     let input: string[] = loadInput(solutionId, realInput);
