@@ -2,13 +2,11 @@ import { loadInput, writeOutput, compareTestFiles } from "../template/utils";
 
 const createMap = (destStart: number, sourceStart: number, size: number, map: Range[] | undefined) => {
     if (!map) map = [];
-
     map.push({
         begin: sourceStart,
         end: sourceStart + size - 1,
         beginValue: destStart
     });
-
     return map;
 };
 
@@ -27,17 +25,10 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
 
     for (const line of input) {
         if (line.indexOf("seeds") !== -1) {
-            const split = line.split(" ");
-            for (const token of split) {
-                if (!Number.isNaN(token)) initial.push(Number(token));
-            }
+            line.split(" ").forEach((token) => { if (!Number.isNaN(token)) initial.push(Number(token)); });
             continue;
         }
-
-        if (line === "") {
-            continue;
-        }
-
+        if (line === "") continue;
         if (line.indexOf("map") !== -1) {
             if (currentMap === undefined) continue;
             maps.push(currentMap);
@@ -50,12 +41,9 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
     }
 
     maps.push(currentMap!);
-    console.log(maps.length);
-    maps.forEach(map => console.log(map));
+    initial = initial.filter((e) => !isNaN(e));
 
     const fin = [];
-
-    initial = initial.filter((e) => !isNaN(e));
 
     let idx = 0;
     for (let y = 0; y < initial.length; y += 2) {
@@ -86,4 +74,4 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
     }
 };
 
-solve(true, "05", 46);
+solve(false, "05", 46);
