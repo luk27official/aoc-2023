@@ -19,3 +19,11 @@ export const compareTestFiles = (solutionId: string) => {
 
     return file1.equals(file2);
 };
+
+export const sum = <T>(array: T[], key: keyof T): number => {
+    const output = array.reduce(
+        (accumulator, item) => accumulator + (item[key] as number),
+        0,
+    );
+    return output;
+};
