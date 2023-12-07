@@ -47,22 +47,13 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
         }
         if (one.hand === "JJJJJ") one.rank = 7;
 
-        map.forEach((v, k) => {
-            if (v === 5) one.rank = 7;
-        });
-
-        map.forEach((v, k) => {
-            if (v === 4) one.rank = 6;
-        });
-
         let foundThree = false;
-        map.forEach((v, k) => {
-            if (v === 3) foundThree = true;
-        });
-
         let foundTwo = false;
         let foundTwo2 = false;
         map.forEach((v, k) => {
+            if (v === 5) one.rank = 7;
+            if (v === 4) one.rank = 6;
+            if (v === 3) foundThree = true;
             if (v === 2 && !foundTwo) foundTwo = true;
             else if (v === 2 && !foundTwo2) foundTwo2 = true;
         });
@@ -81,7 +72,7 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
         let i = 0;
         let AhandSplit = a.hand.split("").map((e) => e.replace("A", "14").replace("K", "13").replace("Q", "12").replace("J", "1").replace("T", "10"));
         let BhandSplit = b.hand.split("").map((e) => e.replace("A", "14").replace("K", "13").replace("Q", "12").replace("J", "1").replace("T", "10"));
-        while (result === 0 && i < 5) {
+        while (result === 0 && i < a.hand.length) {
             result = Number(AhandSplit[i]) - Number(BhandSplit[i]);
             i++;
         }
