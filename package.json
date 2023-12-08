@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "@types/node": "^20.10.1"
+  },
+  "dependencies": {
+    "mathjs": "^12.1.0"
   }
 }
