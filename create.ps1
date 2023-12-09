@@ -28,3 +28,18 @@ foreach ($file in $files) {
         Write-Host "Created file: $file"
     }
 }
+
+# Copy contents from template file to $folderName-1.ts
+$templateFile = "template/template.ts"
+$destinationFile = "$folderName\$folderName-1.ts"
+
+if (Test-Path $templateFile) {
+    try {
+        Copy-Item -Path $templateFile -Destination $destinationFile -ErrorAction Stop
+        Write-Host "Copied contents from '$templateFile' to '$destinationFile'."
+    } catch {
+        Write-Host "Failed to copy contents from '$templateFile' to '$destinationFile'."
+    }
+} else {
+    Write-Host "Template file '$templateFile' not found."
+}
