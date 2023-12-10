@@ -20,7 +20,7 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
         "7": [true, false, false, true],
         "F": [false, true, false, true],
         ".": [false, false, false, false],
-        "S": [true, false, false, true],
+        "S": [true, false, false, true], // !! THIS NEEDS TO BE SET ACCORDINGLY !! (it could be done with parsing, but whatever, im too lazy)
     };
 
     const map = new Map(Object.entries(m));
@@ -40,6 +40,7 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
 
     let sx = 0, sy = 0;
 
+    // find the starting point
     for (let i = 0; i < input.length; i++) {
         for (let y = 0; y < input[i].length; y++) {
             if (input[i][y] === "S") {
@@ -50,10 +51,11 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
     }
 
     const seen: number[][] = [];
-
     const q = [parsedInput[sx][sy]];
     const qd = [0];
     const qt = [[sx, sy]];
+
+    // simple BFS that finds the nearest distances...
     while (q.length > 0) {
         let current = q.shift();
         let currentIdx = qd.shift();
@@ -95,10 +97,9 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
         seen.push([sx, sy]);
     }
 
-    distances.forEach((e) => console.log(e));
     const output = Math.max(...distances.map((dist) => Math.max(...dist)));
-
     console.log(output);
+
     if (Number(output) === expected) {
         console.log("OK");
     } else {

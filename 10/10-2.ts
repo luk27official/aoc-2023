@@ -20,7 +20,7 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
         "7": [true, false, false, true],
         "F": [false, true, false, true],
         ".": [false, false, false, false],
-        "S": [true, false, false, true], // !! THIS NEEDS TO BE SET ACCORDINGLY !! (it could be done with parsing, but whatever)
+        "S": [true, false, false, true], // !! THIS NEEDS TO BE SET ACCORDINGLY !! (it could be done with parsing, but whatever, im too lazy)
     };
 
     const map = new Map(Object.entries(m));
@@ -40,6 +40,7 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
 
     let sx = 0, sy = 0;
 
+    // find the starting point once again
     for (let i = 0; i < input.length; i++) {
         for (let y = 0; y < input[i].length; y++) {
             if (input[i][y] === "S") {
@@ -49,11 +50,13 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
         }
     }
 
+    const startingX = sx, startingY = sy;
     const seen: number[][] = [];
-
     const q = [parsedInput[sx][sy]];
     const qd = [0];
     const qt = [[sx, sy]];
+
+    // simple BFS that finds the nearest distances...
     while (q.length > 0) {
         let current = q.shift();
         let currentIdx = qd.shift();
@@ -95,9 +98,10 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
         seen.push([sx, sy]);
     }
 
+
+    // now it gets interesting
     const vertices: Point[] = [];
     const maximal = Math.max(...distances.map((dist) => Math.max(...dist)));
-    let curr: Point | null = null;
 
     type Point = {
         x: number;
@@ -105,45 +109,43 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
         val: number;
     };
 
-    for (let i = 0; i < distances.length; i++) {
-        for (let y = 0; y < distances[i].length; y++) {
-            if (distances[i][y] === 0) {
-                curr = { x: i, y: y, val: 0 };
-                vertices.push(curr);
-            }
-        }
-    }
+    // find the starting point
+    const startingPt = { x: startingX, y: startingY, val: 0 };
+    vertices.push(startingPt);
 
-    if (curr === null) return;
-
+    // now reconstruct the path to the maximum point
+    let curr = startingPt;
     while (curr.val !== maximal) {
-        for (let i: number = curr.x - 1; i <= curr.x + 1; i++) {
-            for (let y: number = curr.y - 1; y <= curr.y + 1; y++) {
-                if (distances[i] && distances[i][y] === curr.val + 1) {
-                    curr = { x: i, y: y, val: curr.val + 1 };
+        for (let i = curr.x - 1; i <= curr.x + 1; i++) {
+            for (let y = curr.y - 1; y <= curr.y + 1; y++) {
+                const isAdjacentCell = distances[i] && distances[i][y] === curr.val + 1;
+                if (isAdjacentCell) {
+                    curr = { x: i, y, val: curr.val + 1 };
                     vertices.push(curr);
                 }
             }
         }
     }
 
+    // and do the same for the reverse...
     outer: while (curr.val !== 0) {
-        for (let i: number = curr.x - 2; i <= curr.x + 2; i++) {
-            for (let y: number = curr.y - 2; y <= curr.y + 2; y++) {
-                if (distances[i] && distances[i][y] === curr.val - 1) {
+        for (let i = curr.x - 2; i <= curr.x + 2; i++) {
+            for (let y = curr.y - 2; y <= curr.y + 2; y++) {
+                const isValidMove = distances[i] && distances[i][y] === curr.val - 1;
+                const isVertexOccupied = vertices.some(e => e.x === i && e.y === y);
+
+                if (isValidMove) {
                     if (curr.val - 1 === 0) break outer;
-                    else if (!vertices.find((e) => e.x === i && e.y === y)) {
-                        curr = { x: i, y: y, val: curr.val - 1 };
+                    if (!isVertexOccupied) {
+                        curr = { x: i, y, val: curr.val - 1 };
                         vertices.push(curr);
-                    }
-                    else {
-                        continue;
                     }
                 }
             }
         }
     }
 
+    // helper function (self-explanatory)
     const isPointInsidePolygon = (point: Point, polygon: Point[]) => {
         let isInside = false;
         const n = polygon.length;
@@ -165,18 +167,11 @@ const solve = (realInput: boolean, solutionId: string, expected: number) => {
         return isInside;
     };
 
-    const final = [];
-
-    for (let i = 0; i < distances.length; i++) {
-        for (let y = 0; y < distances[i].length; y++) {
-            const pt = { x: i, y: y, val: distances[i][y] };
-            if (isPointInsidePolygon(pt, vertices)) {
-                final.push(pt);
-            }
-        }
-    }
-
-    const output = final.filter((e) => e.val === -1).length;
+    // simply compute the number of internal vertices that are not -1
+    const output = distances.flatMap((row, i) =>
+        row.map((distance, y) => ({ x: i, y, val: distance }))
+            .filter(pt => isPointInsidePolygon(pt, vertices) && pt.val === -1)
+    ).length;
     console.log(output);
 
     if (Number(output) === expected) {
